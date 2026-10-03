@@ -23,12 +23,14 @@ function card(p,i){
 
 // ===== PANTALLA PRINCIPAL =====
 function render(){
- let h=`<h1 onclick="tap()">${esc(S.title)}</h1><p class="sub">${esc(S.sub)}</p>`;
+ let h=`<header class="hero"><span class="kick">Nuevo ingreso</span><h1 onclick="tap()">${esc(S.title)}</h1><p class="sub">${esc(S.sub)}</p><button class="cta" onclick="document.getElementById('catalogo').scrollIntoView({behavior:'smooth'})">Ver prendas</button></header>`;
  if(canEdit&&adm){h+=`<div class="bar"><button class="btn g" onclick="edit=!edit;render()">${edit?'Ver como cliente':'Editar'}</button>`;
   if(edit)h+=`<button class="btn g" onclick="add()">Agregar prenda</button><input type="text" value="${esc(S.phone)}" placeholder="Tu WhatsApp: 59899123456" style="max-width:230px" onchange="S.phone=this.value.replace(/[^0-9]/g,'')">`;
   h+=`<button class="btn g" onclick="copyTxt()">Copiar texto</button><button class="btn p" onclick="save()">Guardar y publicar</button><button class="btn g" onclick="adm=false;edit=false;canEdit=false;location.hash='';render()">Cerrar</button></div>`}
  if(location.hash==='#admin'&&!canEdit)h+=`<div class="bar"><input type="password" id="pw" placeholder="Clave" style="max-width:200px"><button class="btn p" onclick="login()">Entrar</button></div>`;
- h+=`<div class="grid">${S.items.map(card).join('')}</div>`;
+ h+=`<section class="steps"><h2 class="sec">Cómo comprar</h2><div class="sg">${(TIENDA.pasos||[]).map((s,k)=>`<div class="st"><b>${k+1}</b><div><strong>${esc(s[0])}</strong><span>${esc(s[1])}</span></div></div>`).join('')}</div></section>`;
+ h+=`<h2 class="sec" id="catalogo">Prendas disponibles</h2><div class="grid">${S.items.map(card).join('')}</div>`;
+ if(S.phone)h+=`<footer class="ft">¿Dudas? Escribinos por WhatsApp<br><a href="https://wa.me/${S.phone}" target="_blank" rel="noopener">+${S.phone}</a></footer>`;
  $('#app').innerHTML=h;drawCart()}
 function add(){S.items.unshift({name:'Prenda nueva',sizes:'',price:0,sold:false,img:''});render()}
 function del(i){const p=S.items[i];if(p._c)S.items.splice(i,1);else p._c=1;render()}
