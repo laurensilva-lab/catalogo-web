@@ -1,0 +1,10 @@
+{
+ "items": [
+  {"name": "Palazo", "sizes": "", "price": 420, "sold": false, "img": "fotos/palazo.jpg"},
+  {"name": "Short negro rígido", "sizes": "38", "price": 420, "sold": false, "img": "fotos/short-negro-rigido.jpg"},
+  {"name": "Camisola", "sizes": "M", "price": 490, "sold": false, "img": "fotos/camisola.jpg"},
+  {"name": "Short bermuda", "sizes": "40, 42, 46", "price": 800, "sold": false, "img": ""},
+  {"name": "Short", "sizes": "40, 42", "price": 800, "sold": false, "img": ""},
+  {"name": "Short de broderi", "sizes": "M", "price": 390, "sold": false, "img": "fotos/short-de-broderi.jpg"}
+ ]
+}
