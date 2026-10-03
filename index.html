@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ofertas nuevas</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Cormorant+Garamond:wght@500;600&display=swap">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#EEE4DA;--card:#F8F3EE;--tx:#4D0E13;--mu:#8a6a66;--ac:#4D0E13;--on:#EEE4DA;--bd:#D8C4AC;--pk:#C8A49F}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#2a0a0e;--card:#3a1519;--tx:#EEE4DA;--mu:#c9b3ab;--ac:#C8A49F;--on:#2a0a0e;--bd:#5a2c31;--pk:#C8A49F}}
+:root[data-theme="dark"]{--bg:#2a0a0e;--card:#3a1519;--tx:#EEE4DA;--mu:#c9b3ab;--ac:#C8A49F;--on:#2a0a0e;--bd:#5a2c31;--pk:#C8A49F}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:Jost,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;max-width:900px;margin-inline:auto;padding:20px 16px 90px}
+h1{margin:4px 0;font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;font-size:2.2rem;letter-spacing:.02em}.sub{color:var(--mu);margin:0 0 20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;position:relative}
+.ph{aspect-ratio:4/5;width:100%;object-fit:cover;background:var(--bd);display:flex;align-items:center;justify-content:center;font-size:.9rem;color:var(--mu)}
+.b{padding:12px;display:flex;flex-direction:column;gap:6px;flex:1}
+.n{font-weight:500}.sz{color:var(--mu);font-size:.85rem}.pr{font-family:"Cormorant Garamond",Georgia,serif;font-size:1.5rem;font-weight:600;color:var(--ac)}
+.btn{display:block;text-align:center;background:var(--ac);color:var(--on);text-decoration:none;border:0;border-radius:999px;padding:10px;font:inherit;font-weight:500;font-size:.9rem;cursor:pointer;margin-top:auto}
+.btn.g{background:var(--bd);color:var(--tx)}.btn.p{background:var(--pk);color:#4D0E13}
+.tag{position:absolute;top:10px;left:10px;background:var(--pk);color:#4D0E13;padding:3px 10px;border-radius:999px;font-size:.75rem;font-weight:500}
+.sold img,.sold .ph{opacity:.45}.sold .btn{background:var(--mu);color:var(--on);pointer-events:none}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;padding:10px;border:1px dashed var(--pk);border-radius:16px}
+.bar .btn{margin:0;padding:8px 14px}
+.adm{text-align:center;margin:32px 0 8px;font-size:.75rem}.adm a{color:var(--mu);opacity:.6}
+input[type=text],input[type=number]{width:100%;padding:8px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx);font:inherit}
+label{font-size:.8rem;color:var(--mu);display:flex;gap:6px;align-items:center}
+#msg{z-index:20;position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--tx);color:var(--bg);padding:10px 18px;border-radius:999px;display:none}
+.fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));box-shadow:0 4px 14px #0004;padding:12px 22px;z-index:5;margin:0}
+.ov{position:fixed;inset:0;background:#0007;display:flex;align-items:flex-end;justify-content:center;z-index:9}
+.dr{background:var(--bg);width:100%;max-width:520px;max-height:85%;overflow:auto;border-radius:20px 20px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:10px}
+.dr h2{margin:0;font-family:"Cormorant Garamond",Georgia,serif;font-size:1.6rem}
+.ln{display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:1px solid var(--bd);padding-bottom:8px}
+.qt{display:flex;gap:10px;align-items:center}.qt button{width:30px;height:30px;border-radius:50%;border:0;background:var(--bd);color:var(--tx);font-size:1.1rem;cursor:pointer}
+.tot{font-weight:600;font-size:1.1rem;text-align:right}
+.sel{padding:3px 8px;border-radius:999px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font:inherit}
+</style></head><body>
+<div id="app"></div><div id="cart"></div><div id="msg"></div>
+<script>
+let S={items:[]};
+let canEdit=false,edit=false,adm=false;
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const money=n=>'$'+Number(n||0).toLocaleString('es-UY');
+function msg(t){const m=$('#msg');m.textContent=t;m.style.display='block';setTimeout(()=>m.style.display='none',2500)}
+function wa(p){const t='Hola! Me interesa: '+p.name+(p.sizes?' (talle '+p.sizes+')':'')+' - '+money(p.price)+'. ¿Sigue disponible?';return 'https://wa.me/'+(S.phone||'')+'?text='+encodeURIComponent(t)}
+function card(p,i){
+ const img=p.img?`<img class="ph" src="${p.img}" alt="${esc(p.name)}">`:`<div class="ph">Sin foto</div>`;
+ const sz=(p.sizes||'').split(',').map(s=>s.trim()).filter(Boolean);
+ if(!edit)return `<div class="card ${p.sold?'sold':''}">${p.sold?'<span class="tag">Agotado</span>':''}${img}<div class="b"><div class="n">${esc(p.name)}</div><div class="sz">${sz.length?'Talle: <select id="s'+i+'" class="sel">'+sz.map(s=>'<option>'+esc(s)+'</option>').join('')+'</select>':'Consultá talles'}</div><div class="pr">${money(p.price)}</div><button class="btn" onclick="addCart(${i})">${p.sold?'Agotado':'Agregar al carrito'}</button></div></div>`;
+ return `<div class="card">${img}<div class="b">
+ <input type="text" value="${esc(p.name)}" placeholder="Nombre" onchange="S.items[${i}].name=this.value">
+ <input type="text" value="${esc(p.sizes)}" placeholder="Talles (ej: 40, 42)" onchange="S.items[${i}].sizes=this.value">
+ <input type="number" value="${p.price}" placeholder="Precio" onchange="S.items[${i}].price=+this.value">
+ <label><input type="checkbox" ${p.sold?'checked':''} onchange="S.items[${i}].sold=this.checked"> Agotado</label>
+ <label class="btn g" style="margin:0">Cambiar foto<input type="file" accept="image/*" hidden onchange="photo(${i},this.files[0])"></label>
+ <button class="btn g" onclick="del(${i})">${p._c?'Toca de nuevo para borrar':'Borrar'}</button></div></div>`}
+function render(){
+ let h=`<h1>${esc(S.title)}</h1><p class="sub">${esc(S.sub)}</p>`;
+ if(canEdit&&adm){h+=`<div class="bar"><button class="btn g" onclick="edit=!edit;render()">${edit?'Ver como cliente':'Editar'}</button>`;
+  if(edit)h+=`<button class="btn g" onclick="add()">Agregar prenda</button><input type="text" value="${esc(S.phone)}" placeholder="Tu WhatsApp: 59899123456" style="max-width:230px" onchange="S.phone=this.value.replace(/[^0-9]/g,'')">`;
+  h+=`<button class="btn g" onclick="copyTxt()">Copiar texto</button><button class="btn p" onclick="save()">Guardar y publicar</button><button class="btn g" onclick="adm=false;edit=false;canEdit=false;location.hash='';render()">Cerrar</button></div>`}
+ if(location.hash==='#admin'&&!canEdit)h+=`<div class="bar"><input type="password" id="pw" placeholder="Clave" style="max-width:200px"><button class="btn p" onclick="login()">Entrar</button></div>`;
+ h+=`<div class="grid">${S.items.map(card).join('')}</div>`;
+ $('#app').innerHTML=h;drawCart()}
+function add(){S.items.unshift({name:'Prenda nueva',sizes:'',price:0,sold:false,img:''});render()}
+function del(i){const p=S.items[i];if(p._c)S.items.splice(i,1);else p._c=1;render()}
+function cfg(){const n=prompt('Tu número con código de país, sin + ni espacios (ej: 59899123456)',S.phone||'');if(n!==null){S.phone=n.replace(/\D/g,'');msg('Listo, ahora guardá y publicá')}}
+function photo(i,f){if(!f)return;const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,640/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);S.items[i].img=c.toDataURL('image/jpeg',.72);render()};im.src=r.result};r.readAsDataURL(f)}
+function copyTxt(){const t='OFERTAAA, TODO NUEVO\n\n'+S.items.filter(p=>!p.sold).map(p=>'• '+p.name+(p.sizes?', talle '+p.sizes:'')+': '+money(p.price)).join('\n')+'\n\nConsultá por privado'+(S.url?'\nCatálogo con fotos: '+S.url:'');
+ (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>msg('Texto copiado')).catch(()=>prompt('Copiá el texto:',t))}
+let cart=[],cOpen=false;try{cart=JSON.parse(localStorage.cart||'[]')}catch(e){}
+const tot=()=>cart.reduce((a,c)=>a+c.q*c.p,0);
+function sv(){try{localStorage.cart=JSON.stringify(cart)}catch(e){}drawCart()}
+function addCart(i){const p=S.items[i];if(p.sold)return;const e=$('#s'+i),s=e?e.value:'';const k=cart.find(c=>c.n===p.name&&c.s===s);if(k)k.q++;else cart.push({n:p.name,s:s,p:p.price,q:1});sv();msg('Agregado al carrito')}
+function qty(j,d){cart[j].q+=d;if(cart[j].q<1)cart.splice(j,1);sv()}
+function toggleCart(){cOpen=!cOpen;drawCart()}
+function drawCart(){
+ if(edit||!S.items.length){$('#cart').innerHTML='';return}
+ const n=cart.reduce((a,c)=>a+c.q,0);
+ let h=`<button class="btn fab" onclick="toggleCart()">Carrito (${n})</button>`;
+ if(cOpen){h+=`<div class="ov" onclick="if(event.target===this)toggleCart()"><div class="dr"><h2>Tu pedido</h2>`;
+  if(cart.length){h+=cart.map((c,j)=>`<div class="ln"><div>${esc(c.n)}${c.s?' (talle '+esc(c.s)+')':''}<br><span class="sz">${money(c.p)}</span></div><div class="qt"><button onclick="qty(${j},-1)">-</button>${c.q}<button onclick="qty(${j},1)">+</button></div></div>`).join('')+`<div class="tot">Total: ${money(tot())}</div><input type="text" id="nm" placeholder="Tu nombre (opcional)"><button class="btn" onclick="send()">Enviar pedido por WhatsApp</button>`}
+  else h+='<p class="sub">Todavía no agregaste nada.</p>';
+  h+=`<button class="btn g" onclick="toggleCart()">Seguir mirando</button></div></div>`}
+ $('#cart').innerHTML=h}
+function send(){
+ if(!S.phone)return msg('La tienda todavía no configuró su WhatsApp');
+ const nm=($('#nm').value||'').trim();
+ const t='Hola! Quiero hacer este pedido:\n'+cart.map(c=>'- '+c.q+' x '+c.n+(c.s?' (talle '+c.s+')':'')+' - '+money(c.q*c.p)).join('\n')+'\n\nTotal: '+money(tot())+(nm?'\nNombre: '+nm:'');
+ window.open('https://wa.me/'+S.phone+'?text='+encodeURIComponent(t),'_blank');
+ cart=[];cOpen=false;sv()}
+let PW='';
+async function save(){
+ try{const r=await fetch('/api/catalog',{method:'POST',headers:{'x-admin':PW,'content-type':'application/json'},body:JSON.stringify(S,(k,v)=>k==='_c'?undefined:v)});
+ if(r.status===401){canEdit=false;render();return msg('Clave incorrecta')}
+ if(!r.ok)throw new Error((await r.json()).error);msg('Publicado')}catch(e){msg('No se pudo guardar: '+(e.message||e))}}
+async function login(){PW=$('#pw').value;let ok=false;try{ok=(await fetch('/api/catalog?check=1',{headers:{'x-admin':PW}})).ok}catch(e){}
+ if(ok){canEdit=true;adm=true;render()}else msg('Clave incorrecta')}
+async function load(){let d=null;try{const r=await fetch('/api/catalog');if(r.ok)d=await r.json()}catch(e){}
+ if(!d||!d.items){try{d=await(await fetch('/seed.json')).json()}catch(e){d={title:'Ofertas',sub:'',phone:'',items:[]}}}
+ S=d;S.url=location.origin;render()}
+addEventListener('hashchange',render);load();
+</script></body></html>
