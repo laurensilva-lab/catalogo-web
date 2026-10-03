@@ -10,7 +10,7 @@ function wa(p){const t='Hola! Me interesa: '+p.name+(p.sizes?' (talle '+p.sizes+
 
 // ===== TARJETA DE CADA PRENDA =====
 function card(p,i){
- const img=p.img?`<img class="ph" src="${p.img}" alt="${esc(p.name)}">`:`<div class="ph">Sin foto</div>`;
+ const img=p.img?`<img class="ph" ${edit?'':'onclick="zoom('+i+')" '}src="${p.img}" alt="${esc(p.name)}">`:`<div class="ph">Sin foto</div>`;
  const sz=(p.sizes||'').split(',').map(s=>s.trim()).filter(Boolean);
  if(!edit)return `<div class="card ${p.sold?'sold':''}">${p.sold?'<span class="tag">Agotado</span>':''}${img}<div class="b"><div class="n">${esc(p.name)}</div><div class="sz">${sz.length?'Talle: <select id="s'+i+'" class="sel">'+sz.map(s=>'<option>'+esc(s)+'</option>').join('')+'</select>':'Consultá talles'}</div><div class="pr">${money(p.price)}</div><button class="btn" onclick="addCart(${i})">${p.sold?'Agotado':'Agregar al carrito'}</button></div></div>`;
  return `<div class="card">${img}<div class="b">
@@ -23,7 +23,7 @@ function card(p,i){
 
 // ===== PANTALLA PRINCIPAL =====
 function render(){
- let h=`<h1>${esc(S.title)}</h1><p class="sub">${esc(S.sub)}</p>`;
+ let h=`<h1 onclick="tap()">${esc(S.title)}</h1><p class="sub">${esc(S.sub)}</p>`;
  if(canEdit&&adm){h+=`<div class="bar"><button class="btn g" onclick="edit=!edit;render()">${edit?'Ver como cliente':'Editar'}</button>`;
   if(edit)h+=`<button class="btn g" onclick="add()">Agregar prenda</button><input type="text" value="${esc(S.phone)}" placeholder="Tu WhatsApp: 59899123456" style="max-width:230px" onchange="S.phone=this.value.replace(/[^0-9]/g,'')">`;
   h+=`<button class="btn g" onclick="copyTxt()">Copiar texto</button><button class="btn p" onclick="save()">Guardar y publicar</button><button class="btn g" onclick="adm=false;edit=false;canEdit=false;location.hash='';render()">Cerrar</button></div>`}
@@ -59,6 +59,16 @@ function send(){
  const t='Hola! Quiero hacer este pedido:\n'+cart.map(c=>'- '+c.q+' x '+c.n+(c.s?' (talle '+c.s+')':'')+' - '+money(c.q*c.p)).join('\n')+'\n\nTotal: '+money(tot())+(nm?'\nNombre: '+nm:'');
  window.open('https://wa.me/'+S.phone+'?text='+encodeURIComponent(t),'_blank');
  cart=[];cOpen=false;sv()}
+
+// ===== IMAGEN EN PANTALLA COMPLETA =====
+let zoomI=-1;
+function zoom(i){zoomI=i;drawZoom()}
+function drawZoom(){const p=S.items[zoomI];$('#zoom').innerHTML=p&&p.img?`<div class="zv" onclick="zoomI=-1;drawZoom()"><button class="zx">Cerrar</button><img src="${p.img}" alt="${esc(p.name)}"><div class="zc">${esc(p.name)} - ${money(p.price)}</div></div>`:''}
+addEventListener('keydown',e=>{if(e.key==='Escape'){zoomI=-1;drawZoom()}});
+
+// ===== ENTRAR AL ADMIN: tocar 5 veces el título (o abrir /#admin) =====
+let taps=0,tapT;
+function tap(){taps++;clearTimeout(tapT);tapT=setTimeout(()=>taps=0,1500);if(taps>=5){taps=0;location.hash='admin';render()}}
 
 // ===== MODO ADMIN (/#admin) Y GUARDADO =====
 let PW='';
