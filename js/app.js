@@ -80,7 +80,7 @@ async function save(){
  if(!r.ok)throw new Error((await r.json()).error);msg('Publicado')}catch(e){msg('No se pudo guardar: '+(e.message||e))}}
 async function login(){PW=($('#pw').value||'').trim();let r,d={};
  try{r=await fetch('/api/catalog?check=1',{headers:{'x-admin':PW}});d=await r.json().catch(()=>({}))}catch(e){return msg('No se pudo conectar con el servidor')}
- if(r.ok){canEdit=true;adm=true;render();if(!d.blob)msg('Clave correcta, pero falta conectar Blob para guardar');return}
+ if(r.ok){canEdit=true;adm=true;render();if(!d.blob){const e=d.env||{};msg('Clave correcta, pero este despliegue no ve el Blob. TOKEN: '+(e.token?'si':'no')+' | STORE_ID: '+(e.store?'si':'no')+'. Falta volver a desplegar.')};return}
  if(r.status===404)return msg('No se encontró la carpeta api en el proyecto');
  if(d.configured===false)return msg('Falta la variable ADMIN_PASSWORD en Vercel (y volver a desplegar)');
  msg(r.status===401?'Clave incorrecta':'Error del servidor ('+r.status+')')}
