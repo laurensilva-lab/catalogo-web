@@ -1,6 +1,7 @@
 // === DATOS DE LA TIENDA: editá solo lo que está entre comillas ===
 const TIENDA={
-  titulo:'Catálogo Web',
+  titulo:'Coqueta Indumentaria',
+  logo:'img/logo.png',   // imagen del banner (carpeta img/)
   subtitulo:'Prendas nuevas a buen precio. Elegí lo que te gusta, armá tu pedido y mandalo por WhatsApp.',
   whatsapp:'59899525153', // con código de país, sin + ni espacios
   // Pasos de "Cómo comprar": ['Título','Explicación']
