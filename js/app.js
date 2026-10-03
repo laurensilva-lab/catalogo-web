@@ -78,8 +78,12 @@ async function save(){
  try{const r=await fetch('/api/catalog',{method:'POST',headers:{'x-admin':PW,'content-type':'application/json'},body:JSON.stringify(S,(k,v)=>k==='_c'?undefined:v)});
  if(r.status===401){canEdit=false;render();return msg('Clave incorrecta')}
  if(!r.ok)throw new Error((await r.json()).error);msg('Publicado')}catch(e){msg('No se pudo guardar: '+(e.message||e))}}
-async function login(){PW=$('#pw').value;let ok=false;try{ok=(await fetch('/api/catalog?check=1',{headers:{'x-admin':PW}})).ok}catch(e){}
- if(ok){canEdit=true;adm=true;render()}else msg('Clave incorrecta')}
+async function login(){PW=($('#pw').value||'').trim();let r,d={};
+ try{r=await fetch('/api/catalog?check=1',{headers:{'x-admin':PW}});d=await r.json().catch(()=>({}))}catch(e){return msg('No se pudo conectar con el servidor')}
+ if(r.ok){canEdit=true;adm=true;render();if(!d.blob)msg('Clave correcta, pero falta conectar Blob para guardar');return}
+ if(r.status===404)return msg('No se encontró la carpeta api en el proyecto');
+ if(d.configured===false)return msg('Falta la variable ADMIN_PASSWORD en Vercel (y volver a desplegar)');
+ msg(r.status===401?'Clave incorrecta':'Error del servidor ('+r.status+')')}
 async function load(){let d=null;try{const r=await fetch('/api/catalog');if(r.ok)d=await r.json()}catch(e){}
  if(!d||!d.items){try{d=await(await fetch('/productos.json')).json()}catch(e){d={title:'Ofertas',sub:'',phone:'',items:[]}}}
  S=d;S.title=S.title||TIENDA.titulo;S.sub=S.sub||TIENDA.subtitulo;S.phone=S.phone||TIENDA.whatsapp;S.url=location.origin;render()}
