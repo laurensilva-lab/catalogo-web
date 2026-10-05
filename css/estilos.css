@@ -327,11 +327,52 @@ h2,
 
 /* ===== PIE Y ADMINISTRACIÓN ===== */
 .ft {
-  margin-top: 40px;
   text-align: center;
-  color: var(--mu);
-  font-size: 0.9rem;
-  line-height: 1.7;
+  padding: 40px 16px calc(90px + env(safe-area-inset-bottom, 0px));
+}
+
+.ft-btn {
+  display: inline-block;
+  padding: 10px 22px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-family: "Jost", sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: #1a1a1a;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+}
+
+.ft-btn:hover {
+  background: #1a1a1a;
+  color: #fff;
+}
+
+.ft small {
+  display: block;
+  margin-top: 22px;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  opacity: 0.45;
+}
+
+.ft .ft-credit {
+  margin-top: 4px;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: lowercase;
+  opacity: 0.35;
+}
+
+.ft .ft-credit a {
+  color: inherit;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.ft .ft-credit a:hover {
+  opacity: 1;
 }
 .ft a {
   color: var(--tx);
@@ -384,3 +425,4 @@ label {
   max-width: 92%;
   text-align: center;
 }
+

@@ -58,8 +58,11 @@ function render() {
     h += `<div class="bar"><input type="password" id="pw" placeholder="Clave" style="max-width:200px"><button class="btn p" onclick="login()">Entrar</button></div>`;
   h += `<section class="steps"><h2 class="sec">Cómo comprar</h2><div class="sg">${(TIENDA.pasos || []).map((s, k) => `<div class="st"><b>${k + 1}</b><div><strong>${esc(s[0])}</strong><span>${esc(s[1])}</span></div></div>`).join("")}</div></section>`;
   h += `<h2 class="sec" id="catalogo">Prendas disponibles</h2><div class="grid">${S.items.map(card).join("")}</div>`;
-  if (S.phone)
-    h += `<footer class="ft">¿Dudas? Escribinos por WhatsApp<br><a href="https://wa.me/${S.phone}" target="_blank" rel="noopener">+${S.phone}</a></footer>`;
+  h += `<footer class="ft">
+  ${S.phone ? `<a class="ft-btn" href="https://wa.me/${S.phone}" target="_blank" rel="noopener">¿Dudas? Escribinos por WhatsApp</a>` : ""}
+  <small>© ${new Date().getFullYear()} Coqueta Indumentaria · Todos los derechos reservados</small>
+  <small class="ft-credit">Desarrollado por <a href="https://nice-elements-205697.framer.app/" target="_blank" rel="noopener">lala serena</a></small>
+</footer>`;
   $("#app").innerHTML = h;
   drawCart();
 }
